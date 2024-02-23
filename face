@@ -88,57 +88,57 @@ def create():
 @click.command()
 @click.argument('email')
 def adduser(email):
-    print('creating user with email address', email)
     with getdb() as con:
         cursor = con.cursor()
         cursor.execute('''INSERT INTO users (email) VALUES (?)''', (email,))
         id = cursor.lastrowid
-        print(f'inserted with id={id}')
+        print('User (', id, ') created with email address (', email, ')')
 
 @click.command()
 @click.argument('email')
 @click.argument('username')
 def addaccount(email, username):
-    print('creating account with username', username, 'for email', email)
     with getdb() as con:
         cursor = con.cursor()
         cursor.execute('''INSERT INTO accounts (user_id, username)
 VALUES ((SELECT id FROM users WHERE email = ?), ?)''', (email, username))
         id = cursor.lastrowid
-        print(f'inserted with id={id}')
+        print('Account (', id, ') created with username (', username, ') for user (', id, ')(', email,')')
+        #print(f'inserted with id={id}')
 
 @click.command()
 @click.argument('interest')
 def addinterest(interest):
-    print('creating interest with name', interest)
     with getdb() as con:
         cursor = con.cursor()
         cursor.execute('''INSERT INTO interests (name) VALUES (?)''', (interest,))
         id = cursor.lastrowid
-        print(f'inserted with name={interest}')
+        print('Account (', id, ') has this interest (', interest, ')')
+        #print(f'inserted with name={interest}')
 
 @click.command()
 @click.argument('text')
 @click.argument('account')
 def addpost(text, account):
-    print('creating post', text, "from account", account)
     with getdb() as con:
         cursor = con.cursor()
         cursor.execute('''INSERT INTO posts (text, account_id) VALUES (?, ?)''', (text, account))
         id = cursor.lastrowid
-        print(f'inserted with comment={text}')
+        print('Posted to account (', id, ')(',  text, ')')
+        #print(f'inserted with comment={text}')
         
 @click.command()
 @click.argument('account')
 @click.argument('post')
 @click.argument('comment')
 def addcomment(account,  post, comment):
-    print('creating comment on a post from account', account, "on post", post, "the comment:", comment)
     with getdb() as con:
         cursor = con.cursor()
         cursor.execute('''INSERT INTO comments (account_id, post_id, content) VALUES (?, ?, ?)''', (account, post, comment))
         id = cursor.lastrowid
-        print(f'inserted with comment={comment}')
+        #print(f'inserted with comment={comment}')
+        print('Creating comment (', comment, ') on a post (', post, ') from account (', account, ')')
+
 
 @click.command()
 def getcomment():
@@ -149,6 +149,50 @@ def getcomment():
             print(row)
         id = cursor.lastrowid
 
+@click.command()
+def getpost():
+    with getdb() as con:
+        cursor = con.cursor()
+        cursor.execute('''SELECT * FROM posts''')
+        for row in cursor:
+            print(row)
+        id = cursor.lastrowid
+
+@click.command()
+def getuser():
+    with getdb() as con:
+        cursor = con.cursor()
+        cursor.execute('''SELECT * FROM users''')
+        for row in cursor:
+            print(row)
+        id = cursor.lastrowid
+
+@click.command()
+def getaccount():
+    with getdb() as con:
+        cursor = con.cursor()
+        cursor.execute('''SELECT * FROM accounts''')
+        for row in cursor:
+            print(row)
+        id = cursor.lastrowid
+
+@click.command()
+def getinterest():
+    with getdb() as con:
+        cursor = con.cursor()
+        cursor.execute('''SELECT * FROM interests''')
+        for row in cursor:
+            print(row)
+        id = cursor.lastrowid
+
+# @click.command()
+# def getfirstinterestingquery():
+#     with getdb() as con:
+#         cursor = con.cursor()
+#         cursor.execute('''SELECT * FROM interests''')
+#         for row in cursor:
+#             print(row)
+#         #id = cursor.lastrowid
 
 cli.add_command(create)
 cli.add_command(adduser)
@@ -157,5 +201,9 @@ cli.add_command(addpost)
 cli.add_command(addinterest)
 cli.add_command(addcomment)
 cli.add_command(getcomment)
+cli.add_command(getpost)
+cli.add_command(getuser)
+cli.add_command(getaccount)
+cli.add_command(getinterest)
 
 cli()
