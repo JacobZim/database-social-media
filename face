@@ -73,6 +73,16 @@ def create():
     FOREIGN KEY (account_id) REFERENCES accounts (id) ON DELETE CASCADE ON UPDATE CASCADE
     FOREIGN KEY (interest_id) REFERENCES interests (id) ON DELETE CASCADE ON UPDATE CASCADE
 )''')
+        con.execute(
+'''CREATE TABLE comments (
+    account_id      INTEGER NOT NULL,
+    post_id         INTEGER NOT NULL,
+    content         TEXT NOT NULL,
+
+    PRIMARY KEY (account_id, post_id)
+    FOREIGN KEY (account_id) REFERENCES accounts (id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE ON UPDATE CASCADE
+)''')
     print('database created')
 
 @click.command()
@@ -107,8 +117,45 @@ def addinterest(interest):
         id = cursor.lastrowid
         print(f'inserted with name={interest}')
 
+@click.command()
+@click.argument('text')
+@click.argument('account')
+def addpost(text, account):
+    print('creating post', text, "from account", account)
+    with getdb() as con:
+        cursor = con.cursor()
+        cursor.execute('''INSERT INTO posts (text, account_id) VALUES (?, ?)''', (text, account))
+        id = cursor.lastrowid
+        print(f'inserted with comment={text}')
+        
+@click.command()
+@click.argument('account')
+@click.argument('post')
+@click.argument('comment')
+def addcomment(account,  post, comment):
+    print('creating comment on a post from account', account, "on post", post, "the comment:", comment)
+    with getdb() as con:
+        cursor = con.cursor()
+        cursor.execute('''INSERT INTO comments (account_id, post_id, content) VALUES (?, ?, ?)''', (account, post, comment))
+        id = cursor.lastrowid
+        print(f'inserted with comment={comment}')
+
+@click.command()
+def getcomment():
+    with getdb() as con:
+        cursor = con.cursor()
+        cursor.execute('''SELECT * FROM comments''')
+        for row in cursor:
+            print(row)
+        id = cursor.lastrowid
+
+
 cli.add_command(create)
 cli.add_command(adduser)
 cli.add_command(addaccount)
+cli.add_command(addpost)
 cli.add_command(addinterest)
+cli.add_command(addcomment)
+cli.add_command(getcomment)
+
 cli()
