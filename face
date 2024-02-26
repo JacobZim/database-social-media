@@ -73,6 +73,16 @@ def create():
     FOREIGN KEY (account_id) REFERENCES accounts (id) ON DELETE CASCADE ON UPDATE CASCADE
     FOREIGN KEY (interest_id) REFERENCES interests (id) ON DELETE CASCADE ON UPDATE CASCADE
 )''')
+        con.execute(
+'''CREATE TABLE comments (
+    account_id       INTEGER NOT NULL,
+    post_id      INTEGER NOT NULL,
+    content     TEXT NOT NULL,
+
+    PRIMARY KEY (account_id, post_id)
+    FOREIGN KEY (account_id) REFERENCES accounts (id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE ON UPDATE CASCADE
+)''')
     print('database created')
 
 @click.command()
@@ -106,6 +116,8 @@ def addinterest(interest):
         cursor.execute('''INSERT INTO interests (name) VALUES (?)''', (interest,))
         id = cursor.lastrowid
         print(f'inserted with name={interest}')
+
+    
 
 cli.add_command(create)
 cli.add_command(adduser)
