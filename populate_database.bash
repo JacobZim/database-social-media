@@ -17,6 +17,11 @@ for i in {1..10}; do
     ./face addaccountinterest $i $(((($i + 6) % 11) + 1))
 done
 
+for i in {1..10}; do 
+    ./face addcomment $i $((($i + 2) % 10) + 1)) "random text"
+    ./face addcomment $i $((($i + 4) % 10) + 1)) "random text"
+done
+
 ./face addinterest sports
 ./face addinterest smoking
 ./face addinterest yoga
