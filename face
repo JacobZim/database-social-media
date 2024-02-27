@@ -113,7 +113,18 @@ def addinterest(interest):
         cursor = con.cursor()
         cursor.execute('''INSERT INTO interests (name) VALUES (?)''', (interest,))
         id = cursor.lastrowid
-        print('Account (', id, ') has this interest (', interest, ')')
+        print('Added this interest (', interest, ')')
+        #print(f'inserted with name={interest}')
+
+@click.command()
+@click.argument('account_id')
+@click.argument('interest_id')
+def addaccountinterest(account_id, interest_id):
+    with getdb() as con:
+        cursor = con.cursor()
+        cursor.execute('''INSERT INTO hasinterests (account_id, interest_id) VALUES (?, ?)''', (account_id, interest_id,))
+        id = cursor.lastrowid
+        print('Account (', account_id, ') has this interest (', interest_id, ')')
         #print(f'inserted with name={interest}')
 
 @click.command()
@@ -185,25 +196,36 @@ def getinterest():
             print(row)
         id = cursor.lastrowid
 
-# @click.command()
-# def getfirstinterestingquery():
-#     with getdb() as con:
-#         cursor = con.cursor()
-#         cursor.execute('''SELECT * FROM interests''')
-#         for row in cursor:
-#             print(row)
-#         #id = cursor.lastrowid
+@click.command()
+def gethasinterest():
+    with getdb() as con:
+        cursor = con.cursor()
+        cursor.execute('''SELECT * FROM hasinterests''')
+        for row in cursor:
+            print(row)
+        id = cursor.lastrowid
+
+@click.command()
+def getuserswithsimilarinterests():
+    with getdb() as con:
+        cursor = con.cursor()
+        cursor.execute('''SELECT * FROM interests''')
+        for row in cursor:
+            print(row)
+        #id = cursor.lastrowid
 
 cli.add_command(create)
 cli.add_command(adduser)
 cli.add_command(addaccount)
 cli.add_command(addpost)
 cli.add_command(addinterest)
+cli.add_command(addaccountinterest)
 cli.add_command(addcomment)
 cli.add_command(getcomment)
 cli.add_command(getpost)
 cli.add_command(getuser)
 cli.add_command(getaccount)
 cli.add_command(getinterest)
+cli.add_command(gethasinterest)
 
 cli()

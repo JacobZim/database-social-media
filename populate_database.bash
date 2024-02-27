@@ -6,10 +6,17 @@ for i in {1..10}; do
     ./face addpost $i" of great posts"  $i
 done
 
-./face addinterest sports
-./face addinterest smoking
-./face addinterest yoga
-./face addinterest reading
+declare -a interests=("sports" "yoga" "reading" "skateboarding" "travel" "music" "shopping" "food" "gym" "food" "netflix")
+for i in "${interests[@]}"; do
+    ./face addinterest $i
+done
+
+for i in {1..10}; do 
+    ./face addaccountinterest $i $i
+    ./face addaccountinterest $i $(((($i + 3) % 11) + 1))
+    ./face addaccountinterest $i $(((($i + 6) % 11) + 1))
+done
+
 ./face addcomment 2 3 trash
 #./face getcomment
 #./face getpost
