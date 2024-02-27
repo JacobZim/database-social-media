@@ -210,6 +210,15 @@ def getuserswithsimilarinterests():
     with getdb() as con:
         cursor = con.cursor()
         cursor.execute('''SELECT * FROM interests''')
+def getfirstinterestingquery():
+    with getdb() as con:
+        cursor = con.cursor()
+        cursor.execute('''SELECT accounts.id, a2.id, interests.name FROM accounts
+                       JOIN hasinterests on accounts.id = hasinterests.account_id
+                       JOIN interests on hasinterests.interest_id = interests.id
+                       JOIN hasinterests h2 on interests.id = h2.interest_id
+                       JOIN accounts a2 on a2.id = h2.account_id
+                       ''')
         for row in cursor:
             print(row)
         #id = cursor.lastrowid
@@ -226,6 +235,7 @@ cli.add_command(getpost)
 cli.add_command(getuser)
 cli.add_command(getaccount)
 cli.add_command(getinterest)
-cli.add_command(gethasinterest)
+cli.add_command(getfirstinterestingquery)
+
 
 cli()
