@@ -18,20 +18,13 @@ for i in {1..10}; do
 done
 
 for i in {1..10}; do 
-    ./face addcomment $i $((($i + 2) % 10) + 1)) "random text"
-    ./face addcomment $i $((($i + 4) % 10) + 1)) "random text"
+    ./face addcomment $i $(((($i + 2) % 10) + 1)) "random text"
+    ./face addcomment $i $(((($i + 4) % 10) + 1)) "random text"
 done
-
-./face addinterest sports
-./face addinterest smoking
-./face addinterest yoga
-./face addinterest reading
-./face addinterest reading
-./face addinterest smoking
-./face addcomment 2 3 trash
 #./face getcomment
 #./face getpost
 #./face getuser
 #./face getaccount
 #./face getinterest
 ./face getfirstinterestingquery
+./face getsecondinterestingquery

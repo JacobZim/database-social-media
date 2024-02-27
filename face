@@ -206,22 +206,34 @@ def gethasinterest():
         id = cursor.lastrowid
 
 @click.command()
-def getuserswithsimilarinterests():
-    with getdb() as con:
-        cursor = con.cursor()
-        cursor.execute('''SELECT * FROM interests''')
 def getfirstinterestingquery():
     with getdb() as con:
         cursor = con.cursor()
-        cursor.execute('''SELECT accounts.id, a2.id, interests.name FROM accounts
+        cursor.execute('''SELECT accounts.id, a2.id, interests.name, SUM(1) FROM accounts
                        JOIN hasinterests on accounts.id = hasinterests.account_id
                        JOIN interests on hasinterests.interest_id = interests.id
                        JOIN hasinterests h2 on interests.id = h2.interest_id
-                       JOIN accounts a2 on a2.id = h2.account_id
+                       JOIN accounts a2 on a2.id = h2.account_id where accounts.id != a2.id
+                       GROUP BY accounts.id
                        ''')
         for row in cursor:
             print(row)
         #id = cursor.lastrowid
+
+@click.command()
+def getsecondinterestingquery():
+    with getdb() as con:
+        cursor = con.cursor()
+        cursor.execute('''SELECT accounts.id, a2.id, posts.id, posts.text, SUM(1) FROM accounts
+                       JOIN comments on accounts.id = comments.account_id
+                       JOIN posts on comments.post_id = posts.id
+                       JOIN comments c2 on c2.post_id = posts.id
+                       JOIN accounts a2 on a2.id = c2.account_id where accounts.id != a2.id 
+                       GROUP BY accounts.id
+                       ''')
+        for row in cursor:
+            print(row)
+        id = cursor.lastrowid
 
 cli.add_command(create)
 cli.add_command(adduser)
@@ -236,6 +248,6 @@ cli.add_command(getuser)
 cli.add_command(getaccount)
 cli.add_command(getinterest)
 cli.add_command(getfirstinterestingquery)
-
+cli.add_command(getsecondinterestingquery)
 
 cli()
