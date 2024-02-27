@@ -21,10 +21,4 @@ for i in {1..10}; do
     ./face addcomment $i $(((($i + 2) % 10) + 1)) "random text"
     ./face addcomment $i $(((($i + 4) % 10) + 1)) "random text"
 done
-#./face getcomment
-#./face getpost
-#./face getuser
-#./face getaccount
-#./face getinterest
-./face getfirstinterestingquery
-./face getsecondinterestingquery
+
